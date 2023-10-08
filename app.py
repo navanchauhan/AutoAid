@@ -10,13 +10,34 @@ app = Flask(__name__)
 
 current_task = []
 
+my_cars = {
+    "2005 Subaru Forester XT": 0,
+    "2001 BMW 540i": 0,
+    "1999 Mazda Miata": 0,
+}
+
+selected_car = "2001 BMW 540i"
+
 htmx.init_app(app)
 
 @app.route("/")
 def hello_world():
     for _ in range(len(current_task)):
         current_task.pop()
-    return render_template("index.html")
+    return render_template("index.html",my_cars=my_cars.items(), selected=selected_car)
+
+@app.route("/vehicles")
+def vehicles():
+    if request.headers.get("HX-Request"):
+        return render_template("vehicles_list.html", my_cars=my_cars.items(), selected=selected_car)
+    return "Not an HX request"
+
+@app.route("/new_vehicle", methods=["POST"])
+def new_vehicle():
+    if request.headers.get("HX-Request"):
+        my_cars[request.form["newVEHICLE"]] = 0
+        return render_template("vehicles_list.html", my_cars=my_cars.items(), selected=selected_car)
+    return "Not an HX request"
 
 @app.route("/search", methods=["POST"])
 def search():
@@ -60,6 +81,8 @@ def search():
         tasks = ["Have you tried turning your car on and off?"]
         try:
             tasks = pred.split('\n\n')[0].replace("- ","").splitlines()
+            my_cars[car_details] += 1
+            print(my_cars, "MY CARS")
         except:
             print("Uh oh! Claude didn't return any results!")
         return render_template("tasks.html", to_do=tasks)
