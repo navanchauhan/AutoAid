@@ -14,3 +14,8 @@ poetry install
 poetry shell
 python app.py
 ```
+
+## Requirements
+
+1. AWS Credentials with access to `anthropic.claude-instant-v1`
+2. The `SERP_API_KEY` environment variable set
