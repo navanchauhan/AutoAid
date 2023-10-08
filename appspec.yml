@@ -3,6 +3,8 @@ os: linux
 files:
   - source: /
     destination: /home/ec2-user/dep-dir
+  - source: /autoaid.service
+    destination: /etc/systemd/system/
 hooks:
   AfterInstall:
     - location: scripts/install_dependencies.sh

@@ -1,0 +1,12 @@
+[Unit]
+Description=AutoAid Python App
+After=network.target
+
+[Service]
+User=ec2-user
+WorkingDirectory=/home/ec2-user/dep-dir
+ExecStart=/usr/bin/python3 /home/ec2-user/dep-dir/app.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
