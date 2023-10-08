@@ -85,7 +85,7 @@ def search():
             print(my_cars, "MY CARS")
         except:
             print("Uh oh! Claude didn't return any results!")
-        return render_template("tasks.html", to_do=tasks)
+        return render_template("tasks.html", search_query=request.form["search"], to_do=tasks)
     
 @app.route("/progress")
 def progress():

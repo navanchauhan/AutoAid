@@ -1,11 +1,20 @@
-{% for task in to_do %}
-<div class="relative flex items-start">
-    <div class="flex h-6 items-center">
-      <input id="comments" aria-describedby="comments-description" name="comments" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
-    </div>
-    <div class="ml-3 text-sm leading-6">
-      <label for="comments" class="font-medium text-gray-900">Task {{loop.index}}</label>
-      <p id="comments-description" class="text-gray-500">{{task}}</p>
-    </div>
+<div class="bg-white shadow mx-auto sm:rounded-lg">
+  <div class="bg-gray-500 mx-auto px-4 sm:px-6 lg:px-8">
+    <fieldset>
+      <legend class="text-base font-semibold leading-8 text-gray-900">"{{search_query}}" Tasks</legend>
+      <div class="mt-4 divide-y divide-gray-200 border-b border-t border-gray-200">
+        {% for task in to_do %}
+        <div class="relative flex items-start py-4">
+          <div class="flex h-6 items-center">
+            <input id="comments" aria-describedby="comments-description" name="comments" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
+          </div>
+          <div class="ml-3 text-sm leading-6">
+            <label for="comments" class="font-medium text-gray-900">Task {{loop.index}}</label>
+            <p id="comments-description" class="text-gray-500">{{task}}</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </fieldset>
   </div>
-{% endfor %}
+</div>
