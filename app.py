@@ -59,7 +59,7 @@ def search():
         current_task[-1]["icon"] = "check"
         tasks = ["Have you tried turning your car on and off?"]
         try:
-            tasks += pred.split('\n\n')[0].replace("- ","").splitlines()
+            tasks = pred.split('\n\n')[0].replace("- ","").splitlines()
         except:
             print("Uh oh! Claude didn't return any results!")
         return render_template("tasks.html", to_do=tasks)
