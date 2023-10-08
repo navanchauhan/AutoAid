@@ -76,10 +76,10 @@ def search_on_forum(forum, query, max_results: int = 5):
         "google_domain": "google.com",
         "api_key": os.environ.get("SERP_API_KEY", "demo")
     }
-    #search = GoogleSearch(params)
-    #results = search.get_dict()
+    search = GoogleSearch(params)
+    results = search.get_dict()
 
-    results = res # Debugging Data
+    #results = res # Debugging Data
     if results["search_metadata"]['status'] == "Success":
         data = []
         for idx, result in enumerate(results["organic_results"]):

@@ -13,7 +13,6 @@ current_task = []
 my_cars = {
     "2005 Subaru Forester XT": 0,
     "2001 BMW 540i": 0,
-    "1999 Mazda Miata": 0,
 }
 
 selected_car = "2001 BMW 540i"
