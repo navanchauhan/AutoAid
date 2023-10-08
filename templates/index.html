@@ -4,11 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="{{ url_for('static', filename='main.css') }}" rel="stylesheet">
+  <script src="https://unpkg.com/htmx.org@1.9.6" integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni" crossorigin="anonymous"></script>
 </head>
 <body class="h-full">
   <div>
     <!-- Off-canvas menu for mobile, show/hide based on off-canvas menu state. -->
-    <div class="relative z-50 lg:hidden" role="dialog" aria-modal="true">
+    <div class="relative z-50 lg:hidden" role="dialog" aria-modal="true" id="sidebar">
       <!--
         Off-canvas menu backdrop, show/hide based on off-canvas menu state.
 
@@ -32,7 +33,7 @@
             From: "translate-x-0"
             To: "-translate-x-full"
         -->
-        <div class="relative mr-16 flex w-full max-w-xs flex-1">
+        <div class="relative mr-16 flex w-full max-w-xs flex-1" >
           <!--
             Close button, show/hide based on off-canvas menu state.
 
@@ -44,13 +45,24 @@
               To: "opacity-0"
           -->
           <div class="absolute left-full top-0 flex w-16 justify-center pt-5">
-            <button type="button" class="-m-2.5 p-2.5">
+            <button type="button" class="-m-2.5 p-2.5" id="close-button">
               <span class="sr-only">Close sidebar</span>
               <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
+          <script>
+            document.getElementById('close-button').addEventListener('click', function() {
+                var sidebar = document.getElementById('sidebar');
+                sidebar.style.transform = 'translateX(-100%)';
+            });
+
+            document.getElementById('open-button').addEventListener('click', function() {
+                var sidebar = document.getElementById('sidebar');
+                sidebar.style.transform = 'translateX(0)';
+            });
+          </script>
 
           <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-2 ring-1 ring-white/10">
             <div class="flex h-16 shrink-0 items-center">
@@ -128,7 +140,7 @@
 
     <div class="lg:pl-20">
       <div class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
-        <button type="button" class="-m-2.5 p-2.5 text-gray-700 lg:hidden">
+        <button type="button" class="-m-2.5 p-2.5 text-gray-700 lg:hidden"  id="open-button">
           <span class="sr-only">Open sidebar</span>
           <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
@@ -200,13 +212,17 @@
                 <!-- We've used 3xl here, but feel free to try other max-widths based on your needs -->
                 <div class="mx-auto max-w-2xl">
                   <div>
+                    <form hx-post="/search" method="POST" hx-target="#search-results">
                     <label for="search" class="block text-sm font-medium leading-6 text-gray-900">Quick search</label>
                     <div class="relative mt-2 flex items-center">
+                    <input type="hidden" id="car_details" name="car_details" value="2001 BMW 540i">
                       <input type="text" name="search" id="search" class="block w-full rounded-md border-0 py-1.5 pr-14 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                       <div class="absolute inset-y-0 right-0 flex py-1.5 pr-1.5">
                         <kbd class="inline-flex items-center rounded border border-gray-200 px-1 font-sans text-xs text-gray-400">⌘K</kbd>
                       </div>
                     </div>
+                    <button type="submit" class="rounded bg-indigo-600 px-2 py-1 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 mt-3">Search</button>
+                    </form>
                   </div>
                 </div>
               </div>
@@ -215,123 +231,21 @@
               <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <!-- We've used 3xl here, but feel free to try other max-widths based on your needs -->
                 <div class="mx-auto max-w-3xl">
-                  <div class="flow-root">
-                    <ul role="list" class="-mb-8">
-                      <li>
-                        <div class="relative pb-8">
-                          <span class="absolute left-4 top-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
-                          <div class="relative flex space-x-3">
-                            <div>
-                              <span class="h-8 w-8 rounded-full bg-gray-400 flex items-center justify-center ring-8 ring-white">
-                                <svg class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                  <path d="M10 8a3 3 0 100-6 3 3 0 000 6zM3.465 14.493a1.23 1.23 0 00.41 1.412A9.957 9.957 0 0010 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 00-13.074.003z" />
-                                </svg>
-                              </span>
-                            </div>
-                            <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
-                              <div>
-                                <p class="text-sm text-gray-500">Applied to <a href="#" class="font-medium text-gray-900">Front End Developer</a></p>
-                              </div>
-                              <div class="whitespace-nowrap text-right text-sm text-gray-500">
-                                <time datetime="2020-09-20">Sep 20</time>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-                      <li>
-                        <div class="relative pb-8">
-                          <span class="absolute left-4 top-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
-                          <div class="relative flex space-x-3">
-                            <div>
-                              <span class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center ring-8 ring-white">
-                                <svg class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                  <path d="M1 8.25a1.25 1.25 0 112.5 0v7.5a1.25 1.25 0 11-2.5 0v-7.5zM11 3V1.7c0-.268.14-.526.395-.607A2 2 0 0114 3c0 .995-.182 1.948-.514 2.826-.204.54.166 1.174.744 1.174h2.52c1.243 0 2.261 1.01 2.146 2.247a23.864 23.864 0 01-1.341 5.974C17.153 16.323 16.072 17 14.9 17h-3.192a3 3 0 01-1.341-.317l-2.734-1.366A3 3 0 006.292 15H5V8h.963c.685 0 1.258-.483 1.612-1.068a4.011 4.011 0 012.166-1.73c.432-.143.853-.386 1.011-.814.16-.432.248-.9.248-1.388z" />
-                                </svg>
-                              </span>
-                            </div>
-                            <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
-                              <div>
-                                <p class="text-sm text-gray-500">Advanced to phone screening by <a href="#" class="font-medium text-gray-900">Bethany Blake</a></p>
-                              </div>
-                              <div class="whitespace-nowrap text-right text-sm text-gray-500">
-                                <time datetime="2020-09-22">Sep 22</time>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-                      <li>
-                        <div class="relative pb-8">
-                          <span class="absolute left-4 top-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
-                          <div class="relative flex space-x-3">
-                            <div>
-                              <span class="h-8 w-8 rounded-full bg-green-500 flex items-center justify-center ring-8 ring-white">
-                                <svg class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                  <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
-                                </svg>
-                              </span>
-                            </div>
-                            <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
-                              <div>
-                                <p class="text-sm text-gray-500">Completed phone screening with <a href="#" class="font-medium text-gray-900">Martha Gardner</a></p>
-                              </div>
-                              <div class="whitespace-nowrap text-right text-sm text-gray-500">
-                                <time datetime="2020-09-28">Sep 28</time>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-                      <li>
-                        <div class="relative pb-8">
-                          <span class="absolute left-4 top-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
-                          <div class="relative flex space-x-3">
-                            <div>
-                              <span class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center ring-8 ring-white">
-                                <svg class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                  <path d="M1 8.25a1.25 1.25 0 112.5 0v7.5a1.25 1.25 0 11-2.5 0v-7.5zM11 3V1.7c0-.268.14-.526.395-.607A2 2 0 0114 3c0 .995-.182 1.948-.514 2.826-.204.54.166 1.174.744 1.174h2.52c1.243 0 2.261 1.01 2.146 2.247a23.864 23.864 0 01-1.341 5.974C17.153 16.323 16.072 17 14.9 17h-3.192a3 3 0 01-1.341-.317l-2.734-1.366A3 3 0 006.292 15H5V8h.963c.685 0 1.258-.483 1.612-1.068a4.011 4.011 0 012.166-1.73c.432-.143.853-.386 1.011-.814.16-.432.248-.9.248-1.388z" />
-                                </svg>
-                              </span>
-                            </div>
-                            <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
-                              <div>
-                                <p class="text-sm text-gray-500">Advanced to interview by <a href="#" class="font-medium text-gray-900">Bethany Blake</a></p>
-                              </div>
-                              <div class="whitespace-nowrap text-right text-sm text-gray-500">
-                                <time datetime="2020-09-30">Sep 30</time>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-                      <li>
-                        <div class="relative pb-8">
-                          <div class="relative flex space-x-3">
-                            <div>
-                              <span class="h-8 w-8 rounded-full bg-green-500 flex items-center justify-center ring-8 ring-white">
-                                <svg class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                  <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
-                                </svg>
-                              </span>
-                            </div>
-                            <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
-                              <div>
-                                <p class="text-sm text-gray-500">Completed interview with <a href="#" class="font-medium text-gray-900">Katherine Snyder</a></p>
-                              </div>
-                              <div class="whitespace-nowrap text-right text-sm text-gray-500">
-                                <time datetime="2020-10-04">Oct 4</time>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-                    </ul>
+                  <div class="flow-root" hx-get="/progress" hx-trigger="every 1s">
+
                   </div>
                 </div>
-              </div>        
+              </div>      
             </li>
           </ul>
+        </div>
+        <div class="mx-auto max-w-2xl mt-10 ml-2 mr-2 mb-5">
+        <fieldset>
+            <legend class="sr-only">Notifications</legend>
+            <div class="space-y-5" id="search-results">
+
+            </div>
+          </fieldset>
         </div>
       </main>
     </div>
@@ -344,24 +258,43 @@
           <nav class="flex flex-1 flex-col" aria-label="Sidebar">
             <ul role="list" class="-mx-2 space-y-1">
               <li>
-                <a href="#" class="text-gray-700 hover:text-indigo-600 hover:bg-gray-50 group flex gap-x-3 rounded-md p-2 pl-3 text-sm leading-6 font-semibold">
+                <a href="#" onclick="setActiveCar(c1)" id="c1" class="car text-gray-700 hover:text-indigo-600 hover:bg-gray-50 group flex gap-x-3 rounded-md p-2 pl-3 text-sm leading-6 font-semibold">
                   2005 Subaru Forester XT
                   <span class="ml-auto w-9 min-w-max whitespace-nowrap rounded-full bg-white px-2.5 py-0.5 text-center text-xs font-medium leading-5 text-gray-600 ring-1 ring-inset ring-gray-200" aria-hidden="true">20+</span>
                 </a>
               </li>
               <li>
                 <!-- Current: "bg-gray-50 text-indigo-600", Default: "text-gray-700 hover:text-indigo-600 hover:bg-gray-50" -->
-                <a href="#" class="bg-gray-50 text-indigo-600 group flex gap-x-3 rounded-md p-2 pl-3 text-sm leading-6 font-semibold">
+                <a href="#" id="c2" onclick="setActiveCar(c2)" class="car bg-gray-50 text-indigo-600 group flex gap-x-3 rounded-md p-2 pl-3 text-sm leading-6 font-semibold">
                   2001 BMW 540i
                   <span class="ml-auto w-9 min-w-max whitespace-nowrap rounded-full bg-white px-2.5 py-0.5 text-center text-xs font-medium leading-5 text-gray-600 ring-1 ring-inset ring-gray-200" aria-hidden="true">2</span>
                 </a>
               </li>
               <li>
-                <a href="#" class="text-gray-700 hover:text-indigo-600 hover:bg-gray-50 group flex gap-x-3 rounded-md p-2 pl-3 text-sm leading-6 font-semibold">
+                <a href="#" id="c3"  onclick="setActiveCar(c3)" class="car text-gray-700 hover:text-indigo-600 hover:bg-gray-50 group flex gap-x-3 rounded-md p-2 pl-3 text-sm leading-6 font-semibold">
                   1999 Mazda Miata
                   <span class="ml-auto w-9 min-w-max whitespace-nowrap rounded-full bg-white px-2.5 py-0.5 text-center text-xs font-medium leading-5 text-gray-600 ring-1 ring-inset ring-gray-200" aria-hidden="true">1</span>
                 </a>
               </li>
+              <script>
+                function setActiveCar(selectedCar) {
+                    var cars = document.getElementsByClassName('car');
+                    for (var i = 0; i < cars.length; i++) {
+                        cars[i].classList.remove('bg-gray-50');
+                        cars[i].classList.remove('text-indigo-600');
+                        cars[i].classList.add('text-gray-700');
+                        cars[i].classList.remove('hover:text-indigo-600');
+                        cars[i].classList.remove('hover:bg-gray-50');
+                    }
+                    selectedCar.classList.remove('text-gray-700');
+                    selectedCar.classList.add('bg-gray-50');
+                    selectedCar.classList.add('text-indigo-600');
+                    selectedCar.classList.add('hover:text-indigo-600');
+                    selectedCar.classList.add('hover:bg-gray-50');
+
+                    document.getElementById('car_details').value = selectedCar.innerText;
+                    }
+              </script>
             </ul>
           </nav>
         </li>
