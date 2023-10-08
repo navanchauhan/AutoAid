@@ -42,6 +42,7 @@ def new_vehicle():
 def search():
     if request.headers.get("HX-Request"):
         print(request.form["search"])
+        search_query = request.form["search"].title()
         print(request.form["car_details"])
         make = request.form["car_details"].split(" ")[1]
         car_details = request.form["car_details"]
@@ -50,7 +51,7 @@ def search():
         current_task.append({
             "date": "Oct 7",
             "desc_plain": "Searching for ",
-            "desc_bold": request.form["search"],
+            "desc_bold": search_query,
             "icon": "check"
         })
 
@@ -61,7 +62,7 @@ def search():
             "desc_bold": pref_forum[0],
             "icon": "prog"
         })
-        data = search_on_forum(pref_forum[0], request.form["search"], random.randint(4,8))
+        data = search_on_forum(pref_forum[0], search_query, random.randint(4,8))
         current_task[-1]["icon"] = "check"
         current_task.append({
             "date": "Oct 7",
@@ -75,7 +76,7 @@ def search():
             "desc_bold": "",
             "icon": "prog"
         })
-        pred = get_tasks_from_pages(data, request.form["search"], car_details)
+        pred = get_tasks_from_pages(data, search_query, car_details)
         current_task[-1]["icon"] = "check"
         tasks = ["Have you tried turning your car on and off?"]
         try:
@@ -84,7 +85,7 @@ def search():
             print(my_cars, "MY CARS")
         except:
             print("Uh oh! Claude didn't return any results!")
-        return render_template("tasks.html", search_query=request.form["search"], to_do=tasks)
+        return render_template("tasks.html", search_query=search_query, to_do=tasks)
     
 @app.route("/progress")
 def progress():
