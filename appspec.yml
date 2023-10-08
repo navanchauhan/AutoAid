@@ -11,10 +11,10 @@ hooks:
       timeout: 300
       runas: root
   ApplicationStart:
-    - location: start_application.sh
+    - location: start_application
       timeout: 300
       runas: root
   ApplicationStop:
-    - location: stop_application.sh
+    - location: stop_application
       timeout: 300
       runas: root
