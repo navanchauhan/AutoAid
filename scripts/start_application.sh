@@ -1,3 +1,3 @@
 #!/bin/sh
 
-sudo systemd start autoaid
+sudo systemd restart autoaid
